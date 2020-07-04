@@ -1,26 +1,44 @@
-import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+import React, { Component, Fragment } from "react";
+import "./App.css";
+import {
+  BrowserRouter as Router,
+  Switch,
+  Route,
+} from "react-router-dom";
 
-function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
+import Register from "./components/Register/Register";
+import Auth from "./components/Auth/Auth";
+import Main from "./components/Main/Main";
+
+export default class App extends Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      user: "", //получаем с сервера при входе. Затем с этой фигней что-то делаем
+    };
+  }
+
+  selectUser = (props) => {
+    this.setState({ user: props });
+  };
+
+  render() {
+    return (
+      <Router>
+        <Switch>
+          <Route exact path="/">
+           {/*  Если мы авторизированы - переходим на страницу диалогов */}
+            {this.state.user ? (
+              <Main user={this.state.user} />
+            ) : (
+              <Auth selectUser={this.selectUser} />
+            )}
+          </Route>
+          <Route exact path="/register">
+            <Register />
+          </Route>
+        </Switch>
+      </Router>
+    );
+  }
 }
-
-export default App;
