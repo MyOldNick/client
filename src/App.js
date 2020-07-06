@@ -20,6 +20,7 @@ export default class App extends Component {
 
   selectUser = (props) => {
     this.setState({ user: props });
+    console.log(props)
   };
 
   render() {
@@ -28,7 +29,7 @@ export default class App extends Component {
         <Switch>
           <Route exact path="/">
            {/*  Если мы авторизированы - переходим на страницу диалогов */}
-            {this.state.user ? (
+            {this.state.user.login ? (
               <Main user={this.state.user} />
             ) : (
               <Auth selectUser={this.selectUser} />

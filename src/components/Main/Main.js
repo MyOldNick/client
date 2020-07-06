@@ -11,8 +11,7 @@ import Axios from "axios";
 import io from "socket.io-client";
 
 import DialogList from "./DialogList";
-import UsersList from './UsersList'
-
+import UsersList from "./UsersList";
 
 const socket = io("http://localhost:5000"); //настройки подключения
 
@@ -35,9 +34,8 @@ export default class Main extends Component {
     socket.on("connected", (msg) => {
       console.log(msg);
     });
-
     // отправляем имя нашего юзера на сервер, чтобы найти диалоги с этим пользователем
-    socket.emit("dialogs", this.props.user);
+    socket.emit("dialogs", this.props.user.id);
 
     //обновляем диалоги
     socket.on("findDialog", (props) => {
@@ -45,7 +43,7 @@ export default class Main extends Component {
 
       //вытаскиваем с каждого диалога ID и подключаемся к комнате
       this.state.dialogs.forEach((el) => {
-        socket.emit("join", this.props.user, el._id);
+        socket.emit("join", this.props.user.id, el._id);
       });
     });
 
@@ -82,13 +80,29 @@ export default class Main extends Component {
     event.preventDefault();
   };
 
+  createDialog = (recipient) => {
+    socket.emit("createDialog", this.props.user, recipient);
+
+    socket.on("addDialog", (newDialog) => {
+      socket.emit("join", this.props.user.id, newDialog._id);
+
+      console.log(newDialog);
+      const newDialogsArr = this.state.dialogs;
+      newDialogsArr.push(newDialog);
+      this.setState({ dialogs: newDialogsArr });
+      this.selectActive(newDialog._id, newDialog.message);
+    });
+  };
+
   sendMessage = () => {
     //отправляем саабщэньку
     socket.emit(
       "message",
-      { author: this.props.user, text: this.state.value },
+      { author: this.props.user.login, text: this.state.value },
       this.state.active
     );
+
+    this.setState({ value: "" });
   };
 
   //выбираем активный диалог
@@ -98,10 +112,10 @@ export default class Main extends Component {
   };
 
   findAllUsers = () => {
-    alert('В будущем здесь будет поиск по никнейму')
+    alert("В будущем здесь будет поиск по никнейму");
     this.setState({ find: !this.state.find });
     Axios.get(`http://localhost:5000/users`).then((value) =>
-      this.setState({allUsers: value.data})
+      this.setState({ allUsers: value.data })
     );
   };
 
@@ -113,11 +127,20 @@ export default class Main extends Component {
     return (
       <Fragment>
         <Container
-          style={{ width: "1000px", height: "500px" }}
+          style={{ width: "1000px", height: "530px" }}
           className="shadow mt-5"
         >
-          <Row style={{ height: "30px" }}>
-            <h3>ТИЛИГРАМ</h3>
+          <Row style={{ height: "30px" }} className='mb-4'>
+            <Col xs={1} className='mt-3'>
+              <img
+                src="https://img.icons8.com/color/48/000000/odnoklassniki.png"
+                width="50px"
+              />
+            </Col>
+            <Col className='mt-4'>
+            <h3>Instagram</h3>
+            </Col>
+
           </Row>
           <Row>
             <Col>
@@ -126,15 +149,19 @@ export default class Main extends Component {
                 variant="light"
                 onClick={this.findAllUsers}
               >
-                {this.state.find ? 'Закрыть' : 'Найти собеседника'}
+                {this.state.find ? "Закрыть" : "Найти собеседника"}
               </Button>
               {this.state.find ? (
-                <UsersList users={this.state.allUsers}/>
+                <UsersList
+                  users={this.state.allUsers}
+                  createDialog={this.createDialog}
+                />
               ) : (
                 <DialogList
+                  active={this.state.active}
                   dialogs={this.state.dialogs}
                   selectActive={this.selectActive}
-                  user={this.props.user}
+                  user={this.props.user.login}
                 />
               )}
             </Col>
@@ -149,14 +176,14 @@ export default class Main extends Component {
                         <div
                           key={el.text}
                           className={
-                            el.author === this.props.user
+                            el.author === this.props.user.login
                               ? "d-flex align-items-end flex-column"
                               : "d-flex align-items-start flex-column"
                           }
                         >
                           <div
                             style={
-                              el.author === this.props.user
+                              el.author === this.props.user.login
                                 ? {
                                     whiteSpace: "pre-wrap",
                                     backgroundColor: "#007cff",
@@ -170,7 +197,7 @@ export default class Main extends Component {
                                   }
                             }
                             className={
-                              el.author === this.props.user
+                              el.author === this.props.user.login
                                 ? "d-flex align-items-end flex-column pt-2 pr-2 pl-2 mt-2"
                                 : "d-flex align-items-start flex-column pt-2 pr-2 pl-2 mt-2"
                             }
