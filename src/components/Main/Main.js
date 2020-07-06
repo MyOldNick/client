@@ -7,7 +7,12 @@ import {
   Button,
   FormControl,
 } from "react-bootstrap";
+import Axios from "axios";
 import io from "socket.io-client";
+
+import DialogList from "./DialogList";
+import UsersList from './UsersList'
+
 
 const socket = io("http://localhost:5000"); //настройки подключения
 
@@ -17,10 +22,12 @@ export default class Main extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      value: "",  //для формы
-      messages: [],  //список сообщений в активной вкладке
+      value: "", //для формы
+      messages: [], //список сообщений в активной вкладке
       dialogs: [], //список диалогов
       active: "", //активный диалог
+      find: false,
+      allUsers: [],
     };
   }
 
@@ -30,12 +37,12 @@ export default class Main extends Component {
     });
 
     // отправляем имя нашего юзера на сервер, чтобы найти диалоги с этим пользователем
-    socket.emit("dialogs", this.props.user); 
+    socket.emit("dialogs", this.props.user);
 
     //обновляем диалоги
     socket.on("findDialog", (props) => {
       this.setState({ dialogs: props });
-      
+
       //вытаскиваем с каждого диалога ID и подключаемся к комнате
       this.state.dialogs.forEach((el) => {
         socket.emit("join", this.props.user, el._id);
@@ -62,9 +69,8 @@ export default class Main extends Component {
   }
 
   componentDidUpdate() {
-
     //опускаем страничку вниз
-    this.scrollToBottom()
+    this.scrollToBottom();
   }
 
   handleChange = (event) => {
@@ -77,7 +83,6 @@ export default class Main extends Component {
   };
 
   sendMessage = () => {
-
     //отправляем саабщэньку
     socket.emit(
       "message",
@@ -90,6 +95,14 @@ export default class Main extends Component {
   selectActive = (id, message) => {
     this.setState({ active: id });
     this.setState({ messages: message });
+  };
+
+  findAllUsers = () => {
+    alert('В будущем здесь будет поиск по никнейму')
+    this.setState({ find: !this.state.find });
+    Axios.get(`http://localhost:5000/users`).then((value) =>
+      this.setState({allUsers: value.data})
+    );
   };
 
   scrollToBottom = () => {
@@ -108,19 +121,22 @@ export default class Main extends Component {
           </Row>
           <Row>
             <Col>
-            <Button className='mt-4 w-100' variant='light'>Найти собеседника</Button>
-              {this.state.length <= 0
-                ? "У вас нет диалогов, вы нахер никому не нужен"
-                : this.state.dialogs.map((el) => (
-                    <Container
-                      key={el._id}
-                      style={{ height: "80px" }}
-                      className="shadow-sm mt-4"
-                      onClick={() => this.selectActive(el._id, el.message)} //передаем те сообщения и диалог, которые нам нужно отобразить
-                    >
-                      {el.users.map(el => el.name === this.props.user ? undefined : <h4 key={el._id}>{el.name}</h4>)}
-                    </Container>
-                  ))}
+              <Button
+                className="mt-4 w-100"
+                variant="light"
+                onClick={this.findAllUsers}
+              >
+                {this.state.find ? 'Закрыть' : 'Найти собеседника'}
+              </Button>
+              {this.state.find ? (
+                <UsersList users={this.state.allUsers}/>
+              ) : (
+                <DialogList
+                  dialogs={this.state.dialogs}
+                  selectActive={this.selectActive}
+                  user={this.props.user}
+                />
+              )}
             </Col>
             <Col xs lg={8}>
               <Row style={{ height: "400px" }}>
@@ -139,16 +155,20 @@ export default class Main extends Component {
                           }
                         >
                           <div
-                            style={el.author === this.props.user ? {
-                              whiteSpace: "pre-wrap",
-                              backgroundColor: '#007cff',
-                              borderRadius: "10px",
-                              color: 'white'
-                            } : {
-                              whiteSpace: "pre-wrap",
-                              backgroundColor: '#F5F5F5',
-                              borderRadius: "10px",
-                            }}
+                            style={
+                              el.author === this.props.user
+                                ? {
+                                    whiteSpace: "pre-wrap",
+                                    backgroundColor: "#007cff",
+                                    borderRadius: "10px",
+                                    color: "white",
+                                  }
+                                : {
+                                    whiteSpace: "pre-wrap",
+                                    backgroundColor: "#F5F5F5",
+                                    borderRadius: "10px",
+                                  }
+                            }
                             className={
                               el.author === this.props.user
                                 ? "d-flex align-items-end flex-column pt-2 pr-2 pl-2 mt-2"
@@ -179,7 +199,9 @@ export default class Main extends Component {
                         onChange={this.handleChange}
                       />
                     </Col>
-                      <Button type="submit" variant='light'>Отправить</Button>
+                    <Button type="submit" variant="light">
+                      Отправить
+                    </Button>
                   </Row>
                 </Form>
               ) : undefined}
