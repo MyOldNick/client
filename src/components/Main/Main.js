@@ -55,21 +55,36 @@ export default class Main extends Component {
       //фильтруем и делаем нужные нам шалости
       messages.filter((el) => {
         if (el._id === room) {
+
+          let date = Date.now();
+
+          el.updateAt = date;
           el.message.push(msg);
         }
       });
 
-      //обновляем стейт
+      //делаем оортировку по дате и обновляем стейт
+
+      messages.sort((a, b) => {
+        return new Date(a.updateAt) > new Date(b.updateAt) ? -1 : 1;
+      });
+
       this.setState({ dialogs: messages });
     });
 
+    //подписываемся на прослушивание события 
     socket.on("addDialog", (newDialog) => {
+
+      //если нам приходит новый диалог, то подключаемся к нему
       socket.emit("join", this.props.user.id, newDialog._id);
 
-      console.log(newDialog);
+      //Обновляем список диалогов, устанавливаем новый диалог активным - чтобы сразу можно было в него писать
       const newDialogsArr = this.state.dialogs;
+
       newDialogsArr.push(newDialog);
+
       this.setState({ dialogs: newDialogsArr, find: false });
+
       this.selectActive(newDialog._id, newDialog.message);
     });
 
@@ -92,7 +107,6 @@ export default class Main extends Component {
 
   createDialog = (recipient) => {
     socket.emit("createDialog", this.props.user, recipient);
-
   };
 
   sendMessage = () => {
@@ -130,17 +144,16 @@ export default class Main extends Component {
           style={{ width: "1000px", height: "530px" }}
           className="shadow mt-5"
         >
-          <Row style={{ height: "30px" }} className='mb-4'>
-            <Col xs={1} className='mt-3'>
+          <Row style={{ height: "30px" }} className="mb-4">
+            <Col xs={1} className="mt-3">
               <img
                 src="https://img.icons8.com/color/48/000000/odnoklassniki.png"
                 width="50px"
               />
             </Col>
-            <Col className='mt-4'>
-            <h3>Instagram</h3>
+            <Col className="mt-4">
+              <h3>Instagram</h3>
             </Col>
-
           </Row>
           <Row>
             <Col>
