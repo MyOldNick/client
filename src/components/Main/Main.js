@@ -63,6 +63,16 @@ export default class Main extends Component {
       this.setState({ dialogs: messages });
     });
 
+    socket.on("addDialog", (newDialog) => {
+      socket.emit("join", this.props.user.id, newDialog._id);
+
+      console.log(newDialog);
+      const newDialogsArr = this.state.dialogs;
+      newDialogsArr.push(newDialog);
+      this.setState({ dialogs: newDialogsArr, find: false });
+      this.selectActive(newDialog._id, newDialog.message);
+    });
+
     this.scrollToBottom();
   }
 
@@ -83,15 +93,6 @@ export default class Main extends Component {
   createDialog = (recipient) => {
     socket.emit("createDialog", this.props.user, recipient);
 
-    socket.on("addDialog", (newDialog) => {
-      socket.emit("join", this.props.user.id, newDialog._id);
-
-      console.log(newDialog);
-      const newDialogsArr = this.state.dialogs;
-      newDialogsArr.push(newDialog);
-      this.setState({ dialogs: newDialogsArr });
-      this.selectActive(newDialog._id, newDialog.message);
-    });
   };
 
   sendMessage = () => {
@@ -112,7 +113,6 @@ export default class Main extends Component {
   };
 
   findAllUsers = () => {
-    alert("В будущем здесь будет поиск по никнейму");
     this.setState({ find: !this.state.find });
     Axios.get(`http://localhost:5000/users`).then((value) =>
       this.setState({ allUsers: value.data })
