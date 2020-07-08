@@ -22,7 +22,7 @@ export default class Auth extends Component {
     }
 
     handleSubmit = (event) => {
-        axios.post('http://localhost:5000/auth', {
+        axios.post('https://infinite-waters-39278.herokuapp.com/auth', {
             email: this.state.email,
             password: this.state.password
         })
