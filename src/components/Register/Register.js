@@ -1,11 +1,7 @@
 import React, { Component, Fragment } from "react";
-import {
-  Container,
-  Form,
-  Button,
-  FormControl,
-} from "react-bootstrap";
+import { Container, Form, Button, FormControl } from "react-bootstrap";
 import axios from "axios";
+import { Link } from "react-router-dom";
 
 export default class Register extends Component {
   constructor(props) {
@@ -32,7 +28,7 @@ export default class Register extends Component {
 
   handleSubmit = (event) => {
     axios
-      .post("http://ourtelega.northeurope.cloudapp.azure.com:3000/register", {
+      .post("http://ourtelega.northeurope.cloudapp.azure.com:5000/register", {
         login: this.state.login,
         email: this.state.email,
         password: this.state.password,
@@ -54,8 +50,8 @@ export default class Register extends Component {
         className="shadow-sm mt-5 pt-5 text-center"
       >
         {this.state.status === 200 ? (
-          <p className='mt-5'>
-            Аккаунт создан, теперь  Вы можете
+          <p className="mt-5">
+            Аккаунт создан, теперь Вы можете
             <a href="/">
               <h6>Войти</h6>
             </a>
@@ -93,10 +89,7 @@ export default class Register extends Component {
             </Form>
             <p className="mt-4">
               {" "}
-              Есть аккаунт?{" "}
-              <a href="/">
-                Войти
-              </a>
+              Есть аккаунт? <Link to="/">Войти</Link>
             </p>
           </Fragment>
         )}

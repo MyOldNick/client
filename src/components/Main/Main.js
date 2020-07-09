@@ -13,7 +13,7 @@ import io from "socket.io-client";
 import DialogList from "./DialogList";
 import UsersList from "./UsersList";
 
-const socket = io("http://ourtelega.northeurope.cloudapp.azure.com:3000", {secure: true}); //настройки подключения
+const socket = io("http://ourtelega.northeurope.cloudapp.azure.com:5000", {secure: true}); //настройки подключения
 
 // WARNING!!!11 рас рас наговнил здесь знатно, похуже Junior Индус Developer
 
@@ -131,7 +131,7 @@ export default class Main extends Component {
 
   findAllUsers = () => {
     this.setState({ find: !this.state.find });
-    Axios.get(`http://ourtelega.northeurope.cloudapp.azure.com:3000/users`).then((value) =>
+    Axios.get(`http://ourtelega.northeurope.cloudapp.azure.com:5000/users`).then((value) =>
       this.setState({ allUsers: value.data })
     );
   };
@@ -190,7 +190,7 @@ export default class Main extends Component {
                   {this.state.active
                     ? this.state.messages.map((el) => (
                         <div
-                          key={el.text}
+                          key={el._id ? el._id : el.text}
                           className={
                             el.author === this.props.user.login
                               ? "d-flex align-items-end flex-column"
