@@ -22,7 +22,7 @@ export default class Auth extends Component {
     }
 
     handleSubmit = (event) => {
-        axios.post('https://infinite-waters-39278.herokuapp.com/auth', {
+        axios.post('http://ourtelega.northeurope.cloudapp.azure.com:3000/auth', {
             email: this.state.email,
             password: this.state.password
         })

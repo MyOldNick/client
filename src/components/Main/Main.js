@@ -13,7 +13,7 @@ import io from "socket.io-client";
 import DialogList from "./DialogList";
 import UsersList from "./UsersList";
 
-const socket = io("https://infinite-waters-39278.herokuapp.com", {secure: true}); //настройки подключения
+const socket = io("http://ourtelega.northeurope.cloudapp.azure.com:3000", {secure: true}); //настройки подключения
 
 // WARNING!!!11 рас рас наговнил здесь знатно, похуже Junior Индус Developer
 
@@ -71,7 +71,6 @@ export default class Main extends Component {
 
     //подписываемся на прослушивание события
     socket.on("addDialog", (newDialog) => {
-      console.log(newDialog);
 
       //если нам приходит новый диалог, то подключаемся к нему
       socket.emit("join", this.props.user.id, newDialog._id);
@@ -132,7 +131,7 @@ export default class Main extends Component {
 
   findAllUsers = () => {
     this.setState({ find: !this.state.find });
-    Axios.get(`http://localhost:5000/users`).then((value) =>
+    Axios.get(`http://ourtelega.northeurope.cloudapp.azure.com:3000/users`).then((value) =>
       this.setState({ allUsers: value.data })
     );
   };

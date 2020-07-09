@@ -20,7 +20,6 @@ export default class App extends Component {
 
   selectUser = (props) => {
     this.setState({ user: props });
-    console.log(props)
   };
 
   render() {

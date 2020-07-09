@@ -4,7 +4,6 @@ import { Container, Row, Col, Image } from "react-bootstrap";
 import defaultImg from "../../img/mopsik-shchenok-photo-e899.jpg";
 
 const UsersList = (props) => {
-  console.log(props)
   return (
     <div style={{ height: "400px", overflow: "auto" }}>
       {props.users.map((el) => (
