@@ -150,7 +150,7 @@ export default class Main extends Component {
           <Row style={{ height: "30px" }} className="mb-4">
             <Col xs={1} className="mt-3">
               <img
-                src="https://img.icons8.com/color/48/000000/odnoklassniki.png"
+                src="http://img.icons8.com/color/48/000000/odnoklassniki.png"
                 width="50px"
               />
             </Col>
