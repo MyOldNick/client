@@ -5,12 +5,11 @@ import defaultImg from "../../img/mopsik-shchenok-photo-e899.jpg";
 
 const UsersList = (props) => {
   return (
-    <div style={{ height: "400px", overflow: "auto" }}>
+    <div   className='mt-3' style={{  height: "450px", overflow: "auto" }}>
       {props.users.map((el) => (
         <Container
           key={el._id}
           style={{ height: "80px" }}
-          className="shadow-sm mt-4" //передаем те сообщения и диалог, которые нам нужно отобразить
           onClick={() => props.createDialog(el)}
         >
           <Row className="pt-3">

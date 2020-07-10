@@ -7,11 +7,13 @@ import {
   Button,
   FormControl,
 } from "react-bootstrap";
+import {StyleRoot} from 'radium';
 import Axios from "axios";
 import io from "socket.io-client";
 
 import DialogList from "./DialogList";
 import UsersList from "./UsersList";
+import styles from '../../animations/animation'
 
 const socket = io("http://ourtelega.northeurope.cloudapp.azure.com:5000", {secure: true}); //настройки подключения
 
@@ -137,14 +139,14 @@ export default class Main extends Component {
   };
 
   scrollToBottom = () => {
-    this.messagesEnd.scrollIntoView({ behavior: "smooth" });
+    this.messagesEnd.scrollIntoView({ behavior: 'auto' });
   };
 
   render() {
     return (
       <Fragment>
         <Container
-          style={{ width: "1000px", height: "530px" }}
+          style={{ width: "1100px", height: "600px" }}
           className="shadow mt-5"
         >
           <Row style={{ height: "30px" }} className="mb-4">
@@ -182,9 +184,9 @@ export default class Main extends Component {
               )}
             </Col>
             <Col xs lg={8}>
-              <Row style={{ height: "400px" }}>
+              <Row style={{ height: "460px" }}>
                 <Container
-                  className="w-75"
+                  className="w-100 mt-4"
                   style={{ overflow: "auto", height: "90%" }}
                 >
                   {this.state.active
@@ -196,7 +198,7 @@ export default class Main extends Component {
                               ? "d-flex align-items-end flex-column"
                               : "d-flex align-items-start flex-column"
                           }
-                        >
+                        ><StyleRoot style={styles.zoomIn}>
                           <div
                             style={
                               el.author === this.props.user.login
@@ -208,7 +210,7 @@ export default class Main extends Component {
                                   }
                                 : {
                                     whiteSpace: "pre-wrap",
-                                    backgroundColor: "#F5F5F5",
+                                    backgroundColor: "#f8f9fa",
                                     borderRadius: "10px",
                                   }
                             }
@@ -221,6 +223,7 @@ export default class Main extends Component {
                             <h5>{el.author}</h5>
                             <p> {el.text}</p>
                           </div>
+                          </StyleRoot>
                         </div>
                       ))
                     : "Выберите диалог"}
