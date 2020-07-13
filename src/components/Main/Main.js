@@ -6,7 +6,9 @@ import {
   Col,
   Button,
   FormControl,
+  Image
 } from "react-bootstrap";
+import { Link } from "react-router-dom";
 import {StyleRoot} from 'radium';
 import Axios from "axios";
 import io from "socket.io-client";
@@ -149,9 +151,9 @@ export default class Main extends Component {
           style={{ width: "1100px", height: "600px" }}
           className="shadow mt-5"
         >
-          <Row style={{ height: "30px" }} className="mb-4">
+          <Row style={{ height: "30px" }} className="mb-4 ">
             <Col xs={1} className="mt-3">
-              <img
+              <Image
                 src="http://img.icons8.com/color/48/000000/odnoklassniki.png"
                 width="50px"
               />
@@ -159,6 +161,7 @@ export default class Main extends Component {
             <Col className="mt-4">
               <h3>Instagram</h3>
             </Col>
+            <Link to='/settings'><Image src="https://img.icons8.com/ios/50/000000/settings.png" width='30px' height='30px' className='mt-3 mr-3'/></Link>
           </Row>
           <Row>
             <Col>
@@ -173,6 +176,7 @@ export default class Main extends Component {
                 <UsersList
                   users={this.state.allUsers}
                   createDialog={this.createDialog}
+                  user={this.props.user}
                 />
               ) : (
                 <DialogList
@@ -240,6 +244,8 @@ export default class Main extends Component {
                   <Row>
                     <Col xs lg={10}>
                       <FormControl
+                      placeholder='Введите сообщение'
+                        className="w-100 h-100 border-0"
                         as="textarea"
                         value={this.state.value}
                         onChange={this.handleChange}

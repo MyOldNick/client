@@ -1,8 +1,6 @@
 import React from "react";
 import { Container, Row, Col, Image } from "react-bootstrap";
 
-import defaultImg from "../../img/mopsik-shchenok-photo-e899.jpg";
-
 const DialogList = (props) => {
   return (
     <div className="mt-3" style={{ height: "450px", overflow: "auto" }}>
@@ -22,13 +20,23 @@ const DialogList = (props) => {
         >
           <Row className="pt-1">
             <Col xs={2} className="pt-3 ">
-              <Image src={defaultImg} roundedCircle width="50px" />
+              {el.users.map((el) =>
+                el.login === props.user ? undefined : (
+                  <Image
+                    key={el._id}
+                    src={`http://ourtelega.northeurope.cloudapp.azure.com:5000/${el.avatar}`}
+                    roundedCircle
+                    width="50px"
+                    height="50px"
+                  />
+                )
+              )}
             </Col>
             <Col className="ml-3 pt-1">
               {el.users.map((el) =>
-                el.name === props.user ? undefined : (
+                el.login === props.user ? undefined : (
                   <h5 key={el._id} className="mt-2">
-                    {el.name}
+                    {el.login}
                   </h5>
                 )
               )}
@@ -37,9 +45,11 @@ const DialogList = (props) => {
                   {el.message[el.message.length - 1].author === props.user
                     ? "Вы"
                     : el.message[el.message.length - 1].author}
-                  : {el.message[el.message.length - 1].text.substring(0, 20)}
+                  : {el.message[el.message.length - 1].text.substring(0, 15)}
                 </p>
-              ) : <p style={{ color: "gray" }}>*сообщений нет*</p>}
+              ) : (
+                <p style={{ color: "gray" }}>*сообщений нет*</p>
+              )}
             </Col>
           </Row>
         </Container>
