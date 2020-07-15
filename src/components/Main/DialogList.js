@@ -16,7 +16,7 @@ const DialogList = (props) => {
                 }
               : { height: "85px", transition: "0.3s" }
           }
-          onClick={() => props.selectActive(el._id, el.message)} //передаем те сообщения и диалог, которые нам нужно отобразить
+          onClick={() => props.selectActive(el._id, el.message, el.users)} //передаем те сообщения и диалог, которые нам нужно отобразить
         >
           <Row className="pt-1">
             <Col xs={2} className="pt-3 ">
