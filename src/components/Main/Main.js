@@ -88,7 +88,7 @@ export default class Main extends Component {
 
       this.setState({ dialogs: newDialogsArr, find: false });
 
-      this.selectActive(newDialog._id, newDialog.message);
+      this.selectActive(newDialog._id, newDialog.message, newDialog.users);
     });
 
     window.addEventListener("beforeunload", (e) => {
@@ -175,7 +175,7 @@ export default class Main extends Component {
                           <Fragment>
                             <h4>{el.login}</h4>
                             {el.online ? (
-                                <p className="text-success" style={{marginTop: '0px'}}>Онлайн</p>
+                                <p className="text-success" style={{marginTop: '-5px'}}>Онлайн</p>
                             ) : (
                               <p className="text-danger" style={{marginTop: '-5px'}}>Офлайн</p>
                             )}
