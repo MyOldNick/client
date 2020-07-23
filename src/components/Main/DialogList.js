@@ -1,6 +1,8 @@
 import React from "react";
 import { Container, Row, Col, Image } from "react-bootstrap";
 
+import API from '../../config'
+
 const DialogList = (props) => {
   return (
     <div className="mt-3" style={{ height: "450px", overflow: "auto" }}>
@@ -24,7 +26,7 @@ const DialogList = (props) => {
                 el.login === props.user ? undefined : (
                   <Image
                     key={el._id}
-                    src={`http://ourtelega.northeurope.cloudapp.azure.com:5000/${el.avatar}`}
+                    src={`${API}/${el.avatar}`}
                     roundedCircle
                     width="50px"
                     height="50px"
@@ -32,7 +34,7 @@ const DialogList = (props) => {
                 )
               )}
             </Col>
-            <Col className="ml-3 pt-1">
+            <Col className="ml-3 pt-1 unselectable">
               {el.users.map((el) =>
                 el.login === props.user ? undefined : (
                   <h5 key={el._id} className="mt-2">

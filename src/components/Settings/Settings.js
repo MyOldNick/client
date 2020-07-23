@@ -4,20 +4,22 @@ import Avatar from "react-avatar-edit";
 import { Link } from "react-router-dom";
 import axios from "axios";
 
+import API from '../../config'
+
 export default class Settings extends Component {
   constructor(props) {
     super(props);
     this.state = {
       file: "",
-      imagePreviewUrl: `http://ourtelega.northeurope.cloudapp.azure.com:5000/${this.props.user.avatar}`,
+      imagePreviewUrl: `${API}/${this.props.user.avatar}`,
     };
   }
 
-  _handleSubmit(e) {
+  handleSubmit(e) {
     e.preventDefault();
   }
 
-  _handleImageChange(e) {
+  handleImageChange(e) {
     e.preventDefault();
 
     let reader = new FileReader();
@@ -33,17 +35,17 @@ export default class Settings extends Component {
     reader.readAsDataURL(file);
   }
 
-  sendPhoto = async () => {
-    let data = await new FormData();
-    await data.append("avatar", this.state.file);
-    await data.append("id", this.props.user.id);
+  sendPhoto = () => {
+    let data = new FormData();
+    data.append("avatar", this.state.file);
+    data.append("id", this.props.user._id);
 
     console.log(data.getAll("id"));
     console.log(data.getAll("avatar"));
 
     axios
-      .put(`http://ourtelega.northeurope.cloudapp.azure.com:5000/avatar`, data)
-      .then((value) => console.log("okay"));
+      .put(`${API}/avatar`, data)
+      .then((value) => this.props.selectUser(value.data));
   };
 
   render() {
@@ -96,7 +98,7 @@ export default class Settings extends Component {
             <h4>Смена фото</h4>
             <div className="previewComponent mt-3">
               <form
-                onSubmit={(e) => this._handleSubmit(e)}
+                onSubmit={(e) => this.handleSubmit(e)}
                 encType="multipart/form-data"
               >
                 <label htmlFor="file-upload" className="btn btn-success">
@@ -106,7 +108,7 @@ export default class Settings extends Component {
                   id="file-upload"
                   className="fileInput "
                   type="file"
-                  onChange={(e) => this._handleImageChange(e)}
+                  onChange={(e) => this.handleImageChange(e)}
                   style={{ display: "none" }}
                 />
                 <br />

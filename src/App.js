@@ -38,7 +38,7 @@ export default class App extends Component {
           <Route exact path="/register" component={Register}/>
           <Route>
             {this.state.user.login ? (
-              <Settings user={this.state.user}/>
+              <Settings user={this.state.user} selectUser={this.selectUser}/>
             ) : (
               <Auth selectUser={this.selectUser} />
             )}

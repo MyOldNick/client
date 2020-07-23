@@ -3,6 +3,8 @@ import { Container, Form, Button, FormControl } from "react-bootstrap";
 import axios from "axios";
 import { Link } from "react-router-dom";
 
+import API from '../../config'
+
 //тут все проще, чем рожать детей
 
 export default class Auth extends Component {
@@ -24,13 +26,14 @@ export default class Auth extends Component {
 
   handleSubmit = (event) => {
     axios
-      .post("http://ourtelega.northeurope.cloudapp.azure.com:5000/auth", {
+      .post(`${API}/auth`, {
         email: this.state.email,
         password: this.state.password,
       })
       .then((value) => {
         if (value.data) {
           this.props.selectUser(value.data);
+          console.log(value.data)
         }
       })
       .catch((err) => {
@@ -44,7 +47,7 @@ export default class Auth extends Component {
     return (
       <Container
         style={{ width: "400px", height: "500px" }}
-        className="shadow-sm mt-5 pt-5 text-center"
+        className="mt-5 pt-5 text-center"
       >
         <h4>Авторизация</h4>
         <Form className="mt-4" onSubmit={this.handleSubmit}>

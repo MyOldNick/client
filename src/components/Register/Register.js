@@ -3,6 +3,8 @@ import { Container, Form, Button, FormControl } from "react-bootstrap";
 import axios from "axios";
 import { Link } from "react-router-dom";
 
+import API from '../../config'
+
 export default class Register extends Component {
   constructor(props) {
     super(props);
@@ -28,7 +30,7 @@ export default class Register extends Component {
 
   handleSubmit = (event) => {
     axios
-      .post("http://ourtelega.northeurope.cloudapp.azure.com:5000/register", {
+      .post(`${API}/register`, {
         login: this.state.login,
         email: this.state.email,
         password: this.state.password,
@@ -47,15 +49,13 @@ export default class Register extends Component {
     return (
       <Container
         style={{ width: "400px", height: "550px" }}
-        className="shadow-sm mt-5 pt-5 text-center"
+        className="mt-5 pt-5 text-center"
       >
         {this.state.status === 200 ? (
-          <p className="mt-5">
-            Аккаунт создан, теперь Вы можете
-            <a href="/">
-              <h6>Войти</h6>
-            </a>
-          </p>
+            <p className="mt-5">
+              Аккаунт создан, теперь Вы можете 
+              <Link to="/"> Войти</Link>
+            </p>
         ) : (
           <Fragment>
             <h4>Регистрация</h4>

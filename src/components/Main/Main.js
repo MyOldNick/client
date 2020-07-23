@@ -16,8 +16,9 @@ import io from "socket.io-client";
 import DialogList from "./DialogList";
 import UsersList from "./UsersList";
 import styles from "../../animations/animation";
+import API from '../../config'
 
-const socket = io("http://ourtelega.northeurope.cloudapp.azure.com:5000", {
+const socket = io(`${API}`, {
   secure: true,
 }); //настройки подключения
 
@@ -38,9 +39,11 @@ export default class Main extends Component {
   }
 
   componentDidMount() {
-    socket.emit("connected", this.props.user.id);
+    console.log(this.props.user)
+
+    socket.emit("connected", this.props.user._id);
     // отправляем имя нашего юзера на сервер, чтобы найти диалоги с этим пользователем
-    socket.emit("dialogs", this.props.user.id);
+    socket.emit("dialogs", this.props.user._id);
 
     //обновляем диалоги
     socket.on("findDialog", (props) => {
@@ -48,7 +51,7 @@ export default class Main extends Component {
 
       //вытаскиваем с каждого диалога ID и подключаемся к комнате
       this.state.dialogs.forEach((el) => {
-        socket.emit("join", this.props.user.id, el._id);
+        socket.emit("join", this.props.user._id, el._id);
       });
     });
 
@@ -63,6 +66,9 @@ export default class Main extends Component {
           let date = Date.now();
 
           el.updateAt = date;
+
+          console.log(msg)
+
           el.message.push(msg);
         }
       });
@@ -79,7 +85,7 @@ export default class Main extends Component {
     //подписываемся на прослушивание события
     socket.on("addDialog", (newDialog) => {
       //если нам приходит новый диалог, то подключаемся к нему
-      socket.emit("join", this.props.user.id, newDialog._id);
+      socket.emit("join", this.props.user._id, newDialog._id);
 
       //Обновляем список диалогов, устанавливаем новый диалог активным - чтобы сразу можно было в него писать
       const newDialogsArr = this.state.dialogs;
@@ -92,7 +98,7 @@ export default class Main extends Component {
     });
 
     window.addEventListener("beforeunload", (e) => {
-      socket.emit("disconnect", this.props.user.id);
+      socket.emit("disconnect", this.props.user._id);
       e.preventDefault();
     });
 
@@ -102,7 +108,6 @@ export default class Main extends Component {
   componentDidUpdate() {
     //опускаем страничку вниз
     this.scrollToBottom();
-    console.log(this.state.dialogUsers);
   }
 
   handleChange = (event) => {
@@ -131,15 +136,20 @@ export default class Main extends Component {
 
   //выбираем активный диалог
   selectActive = (id, message, users) => {
-    this.setState({ active: id });
-    this.setState({ messages: message });
-    this.setState({ dialogUsers: users });
+
+    this.setState({ active: id, messages: message, dialogUsers: users  });
+
   };
 
   findAllUsers = () => {
+
     this.setState({ find: !this.state.find });
-    Axios.get(`http://ourtelega.northeurope.cloudapp.azure.com:5000/users`).then((value) =>
-      this.setState({ allUsers: value.data })
+
+    Axios.get(`${API}/users`)
+        .then((value) => {
+          this.setState({ allUsers: value.data })
+          console.log(value)
+        }
     );
   };
 
