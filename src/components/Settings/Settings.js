@@ -51,28 +51,9 @@ export default class Settings extends Component {
   render() {
     return (
       <Container
-        style={{ width: "1100px" }}
-        className="pt-3 pb-5 pr-5 pl-5 mt-5 shadow"
+        className="pt-3 pb-5 pr-5 pl-5"
       >
-        {" "}
-        <Row>
-          <Link to='/'>
-            <Col xs={1}>
-              <Image
-                src="http://img.icons8.com/color/48/000000/odnoklassniki.png"
-                width="50px"
-              />
-            </Col>
-          </Link>
-          <Col
-            className="mt-2 d-flex flex-row"
-            style={{ color: "black", textDecoration: "none" }}
-          >
-            <h3>Instagram</h3>
-            <p className="text-secondary mt-2"> (settings)</p>
-          </Col>
-        </Row>
-        <Row className="mt-4">
+        <Row className="mt-2">
           <Col>
             <h4>Основная информация</h4>
             <h5 className="mt-4">Логин:</h5> {this.props.user.login}
@@ -92,9 +73,9 @@ export default class Settings extends Component {
         <Row className="mt-5">
           <Col>
             <h4>Фото профиля</h4>
-            <img style={{ width: "400px" }} src={this.state.imagePreviewUrl} />;
+            <img style={{ width: "350px" }} src={this.state.imagePreviewUrl} />
           </Col>
-          <Col>
+          <Col className='ml-5'>
             <h4>Смена фото</h4>
             <div className="previewComponent mt-3">
               <form
@@ -124,6 +105,6 @@ export default class Settings extends Component {
           </Col>
         </Row>
       </Container>
-    );
+    )
   }
 }

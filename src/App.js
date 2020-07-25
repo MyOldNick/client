@@ -9,7 +9,6 @@ import {
 import Register from "./components/Register/Register";
 import Auth from "./components/Auth/Auth";
 import Main from "./components/Main/Main";
-import Settings from './components/Settings/Settings'
 
 export default class App extends Component {
   constructor(props) {
@@ -30,19 +29,12 @@ export default class App extends Component {
           <Route exact path="/">
            {/*  Если мы авторизированы - переходим на страницу диалогов */}
             {this.state.user.login ? (
-              <Main user={this.state.user} />
+              <Main user={this.state.user} selectUser={this.selectUser}  />
             ) : (
               <Auth selectUser={this.selectUser} />
             )}
           </Route>
           <Route exact path="/register" component={Register}/>
-          <Route>
-            {this.state.user.login ? (
-              <Settings user={this.state.user} selectUser={this.selectUser}/>
-            ) : (
-              <Auth selectUser={this.selectUser} />
-            )}
-          </Route>
         </Switch>
       </Router>
     );

@@ -7,6 +7,7 @@ import {
   Button,
   FormControl,
   Image,
+  Modal,
 } from "react-bootstrap";
 import { Link } from "react-router-dom";
 import { StyleRoot } from "radium";
@@ -16,7 +17,8 @@ import io from "socket.io-client";
 import DialogList from "./DialogList";
 import UsersList from "./UsersList";
 import styles from "../../animations/animation";
-import API from '../../config'
+import API from "../../config";
+import ModalSettings from "../Settings/Modal";
 
 const socket = io(`${API}`, {
   secure: true,
@@ -35,11 +37,12 @@ export default class Main extends Component {
       find: false,
       allUsers: [],
       dialogUsers: [],
+      show: false,
     };
   }
 
   componentDidMount() {
-    console.log(this.props.user)
+    console.log(this.props.user);
 
     socket.emit("connected", this.props.user._id);
     // отправляем имя нашего юзера на сервер, чтобы найти диалоги с этим пользователем
@@ -67,7 +70,7 @@ export default class Main extends Component {
 
           el.updateAt = date;
 
-          console.log(msg)
+          console.log(msg);
 
           el.message.push(msg);
         }
@@ -97,10 +100,10 @@ export default class Main extends Component {
       this.selectActive(newDialog._id, newDialog.message, newDialog.users);
     });
 
-    window.addEventListener("beforeunload", (e) => {
-      socket.emit("disconnect", this.props.user._id);
-      e.preventDefault();
-    });
+    //window.addEventListener("beforeunload", (e) => {
+    //socket.emit("disconnect", this.props.user._id);
+    //e.preventDefault();
+    //});
 
     this.scrollToBottom();
   }
@@ -108,6 +111,10 @@ export default class Main extends Component {
   componentDidUpdate() {
     //опускаем страничку вниз
     this.scrollToBottom();
+  }
+
+  componentWillUnmount() {
+    socket.emit("disconnect", this.props.user._id);
   }
 
   handleChange = (event) => {
@@ -136,30 +143,39 @@ export default class Main extends Component {
 
   //выбираем активный диалог
   selectActive = (id, message, users) => {
-
-    this.setState({ active: id, messages: message, dialogUsers: users  });
-
+    this.setState({ active: id, messages: message, dialogUsers: users });
   };
 
   findAllUsers = () => {
-
     this.setState({ find: !this.state.find });
 
-    Axios.get(`${API}/users`)
-        .then((value) => {
-          this.setState({ allUsers: value.data })
-          console.log(value)
-        }
-    );
+    Axios.get(`${API}/users`).then((value) => {
+      this.setState({ allUsers: value.data });
+      console.log(value);
+    });
   };
 
   scrollToBottom = () => {
     this.messagesEnd.scrollIntoView({ behavior: "auto" });
   };
 
+  handleClose = () => {
+    this.setState({ show: false });
+  };
+  handleShow = () => {
+    this.setState({ show: true });
+  };
+
   render() {
     return (
       <Fragment>
+        <ModalSettings
+          show={this.state.show}
+          handleClose={this.handleClose}
+          handleShow={this.handleShow}
+          user={this.props.user}
+          selectUser={this.props.selectUser}
+        />
         <Container
           style={{ width: "1100px", height: "600px" }}
           className="shadow mt-5"
@@ -185,9 +201,19 @@ export default class Main extends Component {
                           <Fragment>
                             <h4>{el.login}</h4>
                             {el.online ? (
-                                <p className="text-success" style={{marginTop: '-5px'}}>Онлайн</p>
+                              <p
+                                className="text-success"
+                                style={{ marginTop: "-5px" }}
+                              >
+                                Онлайн
+                              </p>
                             ) : (
-                              <p className="text-danger" style={{marginTop: '-5px'}}>Офлайн</p>
+                              <p
+                                className="text-danger"
+                                style={{ marginTop: "-5px" }}
+                              >
+                                Офлайн
+                              </p>
                             )}
                           </Fragment>
                         )}
@@ -197,12 +223,13 @@ export default class Main extends Component {
                 </div>
               ) : undefined}
             </Col>
-            <Link to="/settings">
+            <Link>
               <Image
                 src="https://img.icons8.com/ios/50/000000/settings.png"
                 width="30px"
                 height="30px"
                 className="mt-4 mr-3"
+                onClick={this.handleShow}
               />
             </Link>
           </Row>
