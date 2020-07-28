@@ -33,7 +33,7 @@ export default class Auth extends Component {
       .then((value) => {
         if (value.data) {
           this.props.selectUser(value.data);
-          console.log(value.data)
+          localStorage.setItem('token', JSON.stringify(value.data.token))
         }
       })
       .catch((err) => {

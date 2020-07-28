@@ -5,10 +5,12 @@ import {
   Switch,
   Route,
 } from "react-router-dom";
+import axios from "axios";
 
 import Register from "./components/Register/Register";
 import Auth from "./components/Auth/Auth";
 import Main from "./components/Main/Main";
+import API from "./config";
 
 export default class App extends Component {
   constructor(props) {
@@ -16,6 +18,19 @@ export default class App extends Component {
     this.state = {
       user: "", //получаем с сервера при входе. Затем с этой фигней что-то делаем
     };
+  }
+
+  componentDidMount() {
+
+    const token = JSON.parse(localStorage.getItem('token'))
+
+    if(token) {
+        axios.post(`${API}/token`, {}, {
+          headers: {Authorization: token}
+        })
+        .then(value => this.selectUser(value.data))
+        .catch(err => console.log(err))
+    }
   }
 
   selectUser = (props) => {
