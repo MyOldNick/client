@@ -7,11 +7,10 @@ import {
   Button,
   FormControl,
   Image,
-  Modal,
 } from "react-bootstrap";
 import { Link } from "react-router-dom";
 import { StyleRoot } from "radium";
-import Axios from "axios";
+import axios from "axios";
 import io from "socket.io-client";
 
 import DialogList from "./DialogList";
@@ -42,8 +41,6 @@ export default class Main extends Component {
   }
 
   componentDidMount() {
-    console.log(this.props.user);
-
     socket.emit("connected", this.props.user._id);
     // отправляем имя нашего юзера на сервер, чтобы найти диалоги с этим пользователем
     socket.emit("dialogs", this.props.user._id);
@@ -69,8 +66,6 @@ export default class Main extends Component {
           let date = Date.now();
 
           el.updateAt = date;
-
-          console.log(msg);
 
           el.message.push(msg);
         }
@@ -99,11 +94,6 @@ export default class Main extends Component {
 
       this.selectActive(newDialog._id, newDialog.message, newDialog.users);
     });
-
-    //window.addEventListener("beforeunload", (e) => {
-    //socket.emit("disconnect", this.props.user._id);
-    //e.preventDefault();
-    //});
 
     this.scrollToBottom();
   }
@@ -149,10 +139,23 @@ export default class Main extends Component {
   findAllUsers = () => {
     this.setState({ find: !this.state.find });
 
-    Axios.get(`${API}/users`).then((value) => {
+    axios.get(`${API}/users`).then((value) => {
       this.setState({ allUsers: value.data });
-      console.log(value);
     });
+  };
+
+  logout = () => {
+    const token = JSON.parse(localStorage.getItem("token"));
+
+    if (token) {
+      axios
+        .delete(`${API}/logout`, {}, { headers: { Authorization: token } })
+        .then((value) => {
+          localStorage.removeItem("token");
+          this.props.selectUser("");
+        })
+        .catch((err) => console.log(err));
+    }
   };
 
   scrollToBottom = () => {
@@ -230,6 +233,15 @@ export default class Main extends Component {
                 height="30px"
                 className="mt-4 mr-3"
                 onClick={this.handleShow}
+              />
+            </Link>
+            <Link>
+              <Image
+                className="mt-4 mr-3 ml-2"
+                src="https://img.icons8.com/ios/50/000000/exit.png"
+                width="30px"
+                height="30px"
+                onClick={this.logout}
               />
             </Link>
           </Row>
