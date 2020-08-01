@@ -19,9 +19,7 @@ import styles from "../../animations/animation";
 import API from "../../config";
 import ModalSettings from "../Settings/Modal";
 
-const socket = io(`${API}`, {
-  secure: true,
-}); //настройки подключения
+let socket;
 
 // WARNING!!!11 рас рас наговнил здесь знатно, похуже Junior Индус Developer
 
@@ -41,6 +39,10 @@ export default class Main extends Component {
   }
 
   componentDidMount() {
+    socket = io(`${API}`, {
+      secure: true,
+    });
+
     socket.emit("connected", this.props.user._id);
     // отправляем имя нашего юзера на сервер, чтобы найти диалоги с этим пользователем
     socket.emit("dialogs", this.props.user._id);
@@ -92,7 +94,7 @@ export default class Main extends Component {
 
       this.setState({ dialogs: newDialogsArr, find: false });
 
-      this.selectActive(newDialog._id, newDialog.message, newDialog.users);
+      //this.selectActive(newDialog._id, newDialog.message, newDialog.users);
     });
 
     this.scrollToBottom();
@@ -104,7 +106,7 @@ export default class Main extends Component {
   }
 
   componentWillUnmount() {
-    socket.emit("disconnect", this.props.user._id);
+    socket.emit("logoutUser", this.props.user._id);
   }
 
   handleChange = (event) => {
@@ -145,11 +147,15 @@ export default class Main extends Component {
   };
 
   logout = () => {
+    this.state.dialogs.forEach((el) => {
+      socket.emit("leaveDialog", this.props.user._id, el._id);
+    });
+
     const token = JSON.parse(localStorage.getItem("token"));
 
     if (token) {
       axios
-        .delete(`${API}/logout`, {}, { headers: { Authorization: token } })
+        .put(`${API}/logout`, {}, { headers: { Authorization: token } })
         .then((value) => {
           localStorage.removeItem("token");
           this.props.selectUser("");
