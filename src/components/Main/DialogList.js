@@ -1,7 +1,7 @@
 import React from "react";
-import { Container, Row, Col, Image } from "react-bootstrap";
+import { Container } from "react-bootstrap";
 
-import API from '../../config'
+import Dialog from "./Dialog";
 
 const DialogList = (props) => {
   return (
@@ -20,40 +20,7 @@ const DialogList = (props) => {
           }
           onClick={() => props.selectActive(el._id, el.message, el.users)} //передаем те сообщения и диалог, которые нам нужно отобразить
         >
-          <Row className="pt-1">
-            <Col xs={2} className="pt-3 ">
-              {el.users.map((el) =>
-                el.login === props.user ? undefined : (
-                  <Image
-                    key={el._id}
-                    src={`${API}/${el.avatar}`}
-                    roundedCircle
-                    width="50px"
-                    height="50px"
-                  />
-                )
-              )}
-            </Col>
-            <Col className="ml-3 pt-1 unselectable">
-              {el.users.map((el) =>
-                el.login === props.user ? undefined : (
-                  <h5 key={el._id} className="mt-2">
-                    {el.login}
-                  </h5>
-                )
-              )}
-              {el.message.length > 0 ? (
-                <p style={{ color: "gray" }}>
-                  {el.message[el.message.length - 1].author === props.user
-                    ? "Вы"
-                    : el.message[el.message.length - 1].author}
-                  : {el.message[el.message.length - 1].text.substring(0, 15)}
-                </p>
-              ) : (
-                <p style={{ color: "gray" }}>*сообщений нет*</p>
-              )}
-            </Col>
-          </Row>
+          <Dialog el={el} user={props.user} />
         </Container>
       ))}
     </div>
