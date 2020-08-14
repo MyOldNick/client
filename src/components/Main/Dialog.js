@@ -92,23 +92,24 @@ export default class Dialog extends Component {
               :{" "}
               {this.props.el.message[
                 this.props.el.message.length - 1
-              ].text.substring(0, 12)}
+              ].text.substring(0, 10)}
             </p>
           ) : (
             <p style={{ color: "gray" }}>*сообщений нет*</p>
           )}
         </Col>
-        <Col className="pt-3">
+        <Col className="pt-2">
           {this.state.newMassage ? (
             <StyleRoot style={styles.zoomIn}>
               <div
-                className="mt-2 text-center"
+                className="text-center"
                 style={{
                   width: "25px",
                   height: "25px",
                   borderRadius: "50%",
                   backgroundColor: "#007cff",
                   paddingTop: "4px",
+                  marginTop: '20px'
                 }}
               >
                 <p style={{ color: "white", fontSize: "11px" }}>new</p>

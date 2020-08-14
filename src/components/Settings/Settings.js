@@ -12,6 +12,7 @@ export default class Settings extends Component {
     this.state = {
       file: "",
       imagePreviewUrl: `${API}/${this.props.user.avatar}`,
+      ok: false
     };
   }
 
@@ -45,7 +46,12 @@ export default class Settings extends Component {
 
     axios
       .put(`${API}/avatar`, data)
-      .then((value) => this.props.selectUser(value.data));
+      .then((value) => {
+        this.props.selectUser(value.data)
+        if(value.status === 200) {
+          this.setState({ok: true})
+        }
+      });
   };
 
   render() {
@@ -101,6 +107,7 @@ export default class Settings extends Component {
                   Обновить изображение
                 </button>
               </form>
+              {this.state.ok ? <p className='text-success'>Изображение обновлено</p> : undefined}
             </div>
           </Col>
         </Row>
