@@ -89,21 +89,8 @@ export default class Auth extends Component {
             </p>
           </Col>
           <Col className="pl-5">
-            <div className="">
-              <h4 className="text-center">Здравствуйте</h4>
-              <p className="mt-5">
-                Мессенджер (осмелюсь назвать ЭТО так) был сделан как небольшое, простенькое
-                портфолио и чисто для фана))000
-                <br />
-                В нем есть баги, нету многих нужных функций. В целом он ничего
-                не умеет кроме отправки сообщений.
-                <br />
-                Еще он не адаптирован под мобильные устройства, так как это
-                занимает время, мне лень.
-                <br /> Ну и зачем мобильная версия, если я хочу сделать клиент
-                для телефона на Ionic.
-              </p>
-              <h6>Что было использовано при создании:</h6>
+            <div className='pt-4'>
+              <h6 className='mt-5'>Что было использовано при создании:</h6>
               <ul>
                 <li>Node JS (Express)</li>
                 <li>React</li>
@@ -125,11 +112,11 @@ export default class Auth extends Component {
           </Col>
         </Row>
         <Row>
-          <Col>
+          <Col className='pb-5'>
             {" "}
-            <img src={oneImg} width="500px"></img>
-            <img src={twoImg} width="520px"></img>
-            <img src={threeImg} width="500px"></img>
+            <img src={oneImg} width="100%" className='mt-5'></img>
+            <img src={twoImg} width="100%" className='mt-5'></img>
+            <img src={threeImg} width="100%" className='mt-5'></img>
           </Col>
         </Row>
       </Container>
